@@ -258,6 +258,27 @@ def saved_in_clu_or_rcf(api_data):
     in_rcf = 'rcf' in groups
     
     return (in_clu, in_rcf)
+
+def get_last_uv_photometry(source_photometry):
+    all_filts = np.array([val['filter'] for val in source_photometry])
+    all_mags = np.array([val['mag'] for val in source_photometry])
+    all_mjds = np.array([val['mjd'] for val in source_photometry])
+    
+    uv_dets = np.array([i for i, filt in enumerate(all_filts) if ('uvw' in filt) or ('uvm' in filt)])
+    
+    if len(uv_dets)>0:
+        mags = all_mags[uv_dets]
+        times = Time(f"{today.year}-{today.month}-{today.day}T17:00").mjd - all_mjds[uv_dets]
+        filts = all_filts[uv_dets]
+        
+        most_recent = np.argmin(times)
+        
+        filt = filts[most_recent].split('::')[1]
+        
+        return (mags[most_recent], filt, times[most_recent])
+    
+    else:
+        return (None, None, None)
     
 def query_source(ZTF_name):
     # Fetch source infomation
@@ -291,6 +312,7 @@ def query_source(ZTF_name):
                     param_dec = source_api_data['dec']
                     last_mag, last_filt, last_det = get_phot_endpoints(source_photometry, first=False, last=True) # last detection
                     first_mag, first_filt, first_det = get_phot_endpoints(source_photometry, first=True, last=False) # first detection
+                    uv_mag, uv_filt, uv_det = get_last_uv_photometry(source_photometry)
 
                     db['source'].append({"ZTF_id": param_obj_id, "ra":param_ra, "dec":param_dec, 
                                          "z":param_z, "d_Mpc":dist_Mpc, 'age':param_age,
@@ -298,6 +320,7 @@ def query_source(ZTF_name):
                                          'peak_abs_mag': peak_absolute_mag, "peak_app_mag": peak_apparent_magnitude, 'peak_mag_filt':peak_filt,
                                          'last_mag': last_mag, 'last_filt':last_filt, 'last_det':last_det, 
                                          'first_mag':first_mag, 'first_filt':first_filt, 'first_det':first_det,
+                                         'uv_last_mag':uv_mag, 'uv_last_filt':uv_filt, 'uv_last_det':uv_det,
                                          'in_clu':param_in_clu, 'in_rcf':param_in_rcf})
                 
                 else:
@@ -314,6 +337,7 @@ def query_source(ZTF_name):
                         param_dec = source_api_data['dec']
                         last_mag, last_filt, last_det = get_phot_endpoints(source_photometry, first=False, last=True) # last detection
                         first_mag, first_filt, first_det = get_phot_endpoints(source_photometry, first=True, last=False) # first detection
+                        uv_mag, uv_filt, uv_det = get_last_uv_photometry(source_photometry)
 
                         db['source'].append({"ZTF_id": param_obj_id, "ra":param_ra, "dec":param_dec, 
                                              "z":param_z, "d_Mpc":dist_Mpc, 'age':param_age,
@@ -321,6 +345,7 @@ def query_source(ZTF_name):
                                              'peak_abs_mag': peak_absolute_mag, "peak_app_mag": peak_apparent_magnitude, 'peak_mag_filt':peak_filt,
                                              'last_mag': last_mag, 'last_filt':last_filt, 'last_det':last_det, 
                                              'first_mag':first_mag, 'first_filt':first_filt, 'first_det':first_det,
+                                             'uv_last_mag':uv_mag, 'uv_last_filt':uv_filt, 'uv_last_det':uv_det,
                                              'in_clu':param_in_clu, 'in_rcf':param_in_rcf})
                     else:
                         pass
@@ -380,6 +405,7 @@ def main():
                    'peak_abs_mag', "peak_app_mag", 'peak_mag_filt',
                    'last_mag', 'last_filt', 'last_det', 
                    'first_mag', 'first_filt', 'first_det',
+                   'uv_last_mag', 'uv_last_filt', 'uv_last_det',
                    'in_clu', 'in_rcf')
         
     cols = []

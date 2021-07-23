@@ -8,7 +8,7 @@
     <h1 style='text-align:center'>Candidates for the HST Rolling Snapshots Program from ZTF Supernova</h1>
     <hr/>
     <h2 style='margin-left:1%'> Selection Criteria </h2>
-    <p style='margin-left:1%'> Candidates must be: classified as SN by ZTF, within 150 Mpc, and younger than ~3 weeks (the filter specifically uses age&lt14 days). Another criterion is that the source should be brighter than 19.5 apparent magnitude (m<sub>peak</sub>&lt19.5), but early testing suggests that sources classified while young are likely to meet this cut even if no magnitude limit is specified.
+    <p style='margin-left:1%'> Candidates must be: classified as SN, within 150 Mpc, and younger than ~3 weeks (the filter specifically uses age&lt21 days). Another criterion is that the source should be brighter than 19.5 apparent magnitude (m<sub>peak</sub>&lt19.5), but early testing suggests that sources classified while young are likely to meet this cut even if no magnitude limit is specified.
     <br> Here, age is defined as the time since the midpoint between the first detection and last non-detection, or just time since first detection if there were no previous non-detections. 
     <br> Candidates are considered from both the CLU and RCF programs. </p>
         <h2 style='margin-left:1%'> Candidate Data for {{date}}</h2>
@@ -23,6 +23,8 @@
         <th style="text-align:center;padding:5px"> Age (d)</th> 
         <th style="text-align:center;padding:5px"> m<sub>last</sub> </th>
         <th style="text-align:center;padding:5px"> &Delta;t<sub>last</sub> (d)</th>
+        <th style="text-align:center;padding:5px"> m<sub>last,UV</sub> </th>
+        <th style="text-align:center;padding:5px"> &Delta;t<sub>last,UV</sub> (d)</th>
         <th style="text-align:center;padding:5px"> CLU </th>
         <th style="text-align:center;padding:5px"> RCF </th>
         </tr>
@@ -38,6 +40,15 @@
           <td style="text-align:center;padding:5px">{{'%.1f'%post['age']}}</td>  
           <td style="text-align:center;padding:5px">{{'%.1f'%post['last_mag']}} ({{post['last_filt']}})</td>
           <td style="text-align:center;padding:5px">{{'%.1f'%post['last_det']}}</td>
+            
+          {% if post['uv_last_mag'] %}  
+          <td style="text-align:center;padding:5px">{{'%.1f'%post['uv_last_mag']}} ({{post['uv_last_filt']}})</td>
+          <td style="text-align:center;padding:5px">{{'%.1f'%post['uv_last_det']}}</td>  
+          {% else %}  
+          <td style="text-align:center;padding:5px">{{post['uv_last_mag']}}</td>  
+          <td style="text-align:center;padding:5px">{{post['uv_last_det']}}</td>  
+          {% endif %}  
+
           {% if post['in_clu']=='True' %}
           <td style="text-align:center;padding:5px">&#10003</td>
           {% else %}
