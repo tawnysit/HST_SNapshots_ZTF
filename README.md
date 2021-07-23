@@ -20,12 +20,12 @@ By default, the script searches all candidates saved to the CLU and RCF programs
      "programs": {"CLU":43, "RCF":41, PROGRAM_NAME:PROGRAM_ID}
     },
 ```
-The current criteria for selecting a source as a HST Rolling Snapshots candidate is that the source must be within 150 Mpc, brighter than 19.5 in apparent magnitude, and younger than 2 weeks. These parameters can also be adjusted by editing the `selection_params` in `set_params.json`:
+The current criteria for selecting a source as a HST Rolling Snapshots candidate is that the source must be classified as a supernova, within 150 Mpc, and younger than 3 weeks. We also want sourcees brighter than 19.5 in apparent magnitude, but so far most sources that meet the classification, distance, and age criteria already meet this cut. These parameters can also be adjusted by editing the `selection_params` in `set_params.json`:
 ```
 "selection_params":
     {"dist_Mpc": 150.0,
-     "age_days": 14,
-     "peak_mag": 19.5
+     "age_days": 21,
+     "peak_mag": "None"
     }
 ```
 Note that you will have to go into `templates/candtable.html` to adjust the description of selection criteria if these parameters are adjusted. The same file can also be edited to display different parameters in the table on the local webpage.

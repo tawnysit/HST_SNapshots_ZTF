@@ -272,13 +272,13 @@ def query_source(ZTF_name):
     if param_z and clf:
         dist_Mpc = redshift_to_distance(param_z)
         
-        if dist_Mpc<SELECT_PARAMS['dist_Mpc']: # HST candidates within 150 Mpc
+        if dist_Mpc<SELECT_PARAMS['dist_Mpc']:
             param_age = get_age(source_photometry)
             
-            if param_age<SELECT_PARAMS['age_days']: # HST candidates younger than 2 weeks
+            if param_age<SELECT_PARAMS['age_days']:
                 peak_apparent_magnitude, peak_filt = get_peak_app_mag(ZTF_name)
                 
-                if peak_apparent_magnitude<SELECT_PARAMS['peak_mag']: # HST candidates brighter than 19.5 apparent mag
+                if SELECT_PARAMS['peak_mag']=="None":
                     peak_absolute_mag = dist_mod_mag(peak_apparent_magnitude, dist_Mpc)
 
                     param_classification = clf[-1]['classification']
@@ -299,8 +299,31 @@ def query_source(ZTF_name):
                                          'last_mag': last_mag, 'last_filt':last_filt, 'last_det':last_det, 
                                          'first_mag':first_mag, 'first_filt':first_filt, 'first_det':first_det,
                                          'in_clu':param_in_clu, 'in_rcf':param_in_rcf})
+                
                 else:
-                    pass
+                    if peak_apparent_magnitude<SELECT_PARAMS['peak_mag']:
+                        peak_absolute_mag = dist_mod_mag(peak_apparent_magnitude, dist_Mpc)
+
+                        param_classification = clf[-1]['classification']
+                        param_prob = clf[-1]['probability']
+
+                        param_in_clu, param_in_rcf = saved_in_clu_or_rcf(source_api_data)
+
+                        param_obj_id = ZTF_name
+                        param_ra = source_api_data['ra']
+                        param_dec = source_api_data['dec']
+                        last_mag, last_filt, last_det = get_phot_endpoints(source_photometry, first=False, last=True) # last detection
+                        first_mag, first_filt, first_det = get_phot_endpoints(source_photometry, first=True, last=False) # first detection
+
+                        db['source'].append({"ZTF_id": param_obj_id, "ra":param_ra, "dec":param_dec, 
+                                             "z":param_z, "d_Mpc":dist_Mpc, 'age':param_age,
+                                             "classification": param_classification, "classification_prob": param_prob,
+                                             'peak_abs_mag': peak_absolute_mag, "peak_app_mag": peak_apparent_magnitude, 'peak_mag_filt':peak_filt,
+                                             'last_mag': last_mag, 'last_filt':last_filt, 'last_det':last_det, 
+                                             'first_mag':first_mag, 'first_filt':first_filt, 'first_det':first_det,
+                                             'in_clu':param_in_clu, 'in_rcf':param_in_rcf})
+                    else:
+                        pass
             else:
                 pass
         else:
