@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+{% block content %}
+    {% block body %}
+    <h1 style='text-align:center'>Candidates for the HST Rolling Snapshots Program from ZTF Supernova</h1>
+    <hr/>
+    <h2 style='margin-left:1%'> Selection Criteria </h2>
+    <p style='margin-left:1%'> Candidates must be: classified as SN by ZTF, within 150 Mpc, brighter than 19.5 apparent magnitude (m<sub>peak</sub>&lt19.5), and younger than ~2 weeks (the filter specifically uses age&lt14 days). 
+    <br> Here, age is defined as the time since the midpoint between the first detection and last non-detection, or just time since first detection if there were no previous non-detections. 
+    <br> Candidates are considered from both the CLU and RCF programs. </p>
+        <h2 style='margin-left:1%'> Candidate Data for {{date}}</h2>
+        <table border="1" style='margin-left:auto;margin-right:auto'>
+        <tr>
+        <th style="text-align:center;padding:5px"> ZTF ID</th>
+        <th style="text-align:center;padding:5px"> RA </th>
+        <th style="text-align:center;padding:5px"> Dec </th>
+        <th style="text-align:center;padding:5px"> Type </th>
+        <th style="text-align:center;padding:5px"> Distance (Mpc) </th>
+        <th style="text-align:center;padding:5px"> m<sub>peak</sub> </th>
+        <th style="text-align:center;padding:5px"> Age (d)</th> 
+        <th style="text-align:center;padding:5px"> m<sub>last</sub> </th>
+        <th style="text-align:center;padding:5px"> &Delta;t<sub>last</sub> (d)</th>
+        <th style="text-align:center;padding:5px"> CLU </th>
+        <th style="text-align:center;padding:5px"> RCF </th>
+        </tr>
+
+      {% for post in posts %}
+        <tr>
+          <td style="text-align:center;padding:5px"><a href="https://fritz.science/source/{{post['ZTF_id']}}">{{post['ZTF_id']}}</a></td>
+          <td style="text-align:center;padding:5px">{{'%.5f'%post['ra']}}</td>
+          <td style="text-align:center;padding:5px">{{'%.5f'%post['dec'] }}</td>
+          <td style="text-align:center;padding:5px">{{post['classification']}}  (P={{'%.1f'%post['classification_prob']}})</td>
+          <td style="text-align:center;padding:5px">{{'%.1f'%post['d_Mpc']}}</td>  
+          <td style="text-align:center;padding:5px">{{'%.1f'%post['peak_app_mag']}} ({{post['peak_mag_filt']}})</td>
+          <td style="text-align:center;padding:5px">{{'%.1f'%post['age']}}</td>  
+          <td style="text-align:center;padding:5px">{{'%.1f'%post['last_mag']}} ({{post['last_filt']}})</td>
+          <td style="text-align:center;padding:5px">{{'%.1f'%post['last_det']}}</td>
+          {% if post['in_clu']=='True' %}
+          <td style="text-align:center;padding:5px">&#10003</td>
+          {% else %}
+          <td style="text-align:center;padding:5px">&#10007</td>
+          {% endif %} 
+            
+          {% if post['in_rcf']=='True'%}
+          <td style="text-align:center;padding:5px">&#10003</td>
+          {% else %}
+          <td style="text-align:center;padding:5px">&#10007</td>
+          {% endif %}    
+        </tr>
+      {% endfor %}
+      </table>
+
+    {% endblock %}
+{% endblock %}

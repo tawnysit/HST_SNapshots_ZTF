@@ -1,0 +1,18 @@
+{
+  "user":
+    {"user_last_name": "USER_LAST_NAME_HERE",
+     "FritzToken": "FRITZ_AUTHENTICATION_TOKEN_HERE"
+    },
+    
+  "query_params":
+    {"saved_days": 15,
+     "programs": {"CLU":43, "RCF":41}
+    },
+  
+  "selection_params":
+    {"dist_Mpc": 150.0,
+     "age_days": 14,
+     "peak_mag": 19.5
+    }
+
+}
