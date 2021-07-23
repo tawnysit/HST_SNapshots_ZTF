@@ -271,11 +271,16 @@ def get_last_uv_photometry(source_photometry):
         times = Time(f"{today.year}-{today.month}-{today.day}T17:00").mjd - all_mjds[uv_dets]
         filts = all_filts[uv_dets]
         
-        most_recent = np.argmin(times)
-        
-        filt = filts[most_recent].split('::')[1]
-        
-        return (mags[most_recent], filt, times[most_recent])
+        # favor UVW1 filter if available
+        uvw1 = np.array([i for i, filt in enumerate(filts) if 'uvw1' in filt])
+        if len(uvw1)>0:
+            most_recent = np.argmin(times[uvw1])
+            filt = filts[uvw1][most_recent].split('::')[1]
+            return (mags[uvw1][most_recent], filt, times[uvw1][most_recent])
+        else:
+            most_recent = np.argmin(times)
+            filt = filts[most_recent].split('::')[1]
+            return (mags[most_recent], filt, times[most_recent])
     
     else:
         return (None, None, None)
