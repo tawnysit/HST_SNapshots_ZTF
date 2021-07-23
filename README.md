@@ -13,7 +13,7 @@ The last name is there but not strictly necessary to run the script, but you wil
 
 #### Adjusting Search Parameters
 ---
-By default, the script searches all candidates saved to the CLU and RCF programs in the last 15 days. These parameters can be adjusted by editing `saved_days` and `programs` in `set_params.json`:
+By default, the script searches all candidates saved to the CLU and RCF programs in the last 30 days. These parameters can be adjusted by editing `saved_days` and `programs` in `set_params.json`:
 ```
 "query_params":
     {"saved_days": NUMBER_OF_DAYS_BEFORE_TODAY_TO_QUERY,
